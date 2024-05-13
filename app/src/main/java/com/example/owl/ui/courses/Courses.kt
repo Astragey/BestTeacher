@@ -91,7 +91,7 @@ fun CoursesAppBar() {
         )
         IconButton(
             modifier = Modifier.align(Alignment.CenterVertically),
-            onClick = { /* todo */ }
+            onClick = {  }
         ) {
             Icon(
                 imageVector = Icons.Filled.AccountCircle,

@@ -47,6 +47,7 @@ fun MyCourses(
             Spacer(Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
         }
         item {
+            
             CoursesAppBar()
         }
         itemsIndexed(
