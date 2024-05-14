@@ -35,6 +35,7 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -52,6 +53,7 @@ import androidx.navigation.compose.composable
 import com.example.owl.R
 import com.example.owl.model.courses
 import com.example.owl.model.topics
+import com.example.owl.ui.MainActions
 import com.example.owl.ui.MainDestinations
 
 fun NavGraphBuilder.courses(
@@ -60,6 +62,7 @@ fun NavGraphBuilder.courses(
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
+    val actions = MainActions(navController)
     composable(CourseTabs.FEATURED.route) { from ->
         // Show onboarding instead if not shown yet.
         LaunchedEffect(onboardingComplete) {
@@ -79,12 +82,14 @@ fun NavGraphBuilder.courses(
         MyPersons(
             persons  = persons,
             { id -> onCourseSelected(id, from) },
-            modifier
+            modifier,
+            navController
         )
     }
-    composable(CourseTabs.SEARCH.route) {
-        SearchCourses(topics, modifier)
+    composable("courses/search") {backStackEntry: NavBackStackEntry ->
+        SearchCourses(topics, modifier,upPress = { actions.upPress(backStackEntry) },navController)
     }
+
 }
 
 @Composable
@@ -161,8 +166,7 @@ enum class CourseTabs(
 ) {
     MY_COURSES(R.string.my_courses, R.drawable.ic_grain, CoursesDestinations.MY_COURSES_ROUTE),
     FEATURED(R.string.featured, R.drawable.ic_featured, CoursesDestinations.FEATURED_ROUTE),
-    SEARCH(R.string.search, R.drawable.ic_search, CoursesDestinations.SEARCH_COURSES_ROUTE)
-}
+   }
 
 /**
  * Destinations used in the ([OwlApp]).

@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.LocalContentColor
@@ -35,6 +36,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,6 +48,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.owl.R
 import com.example.owl.model.Topic
 import com.example.owl.model.topics
@@ -55,7 +58,9 @@ import com.example.owl.ui.theme.BlueTheme
 @Composable
 fun SearchCourses(
     topics: List<Topic>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    upPress: () -> Unit,
+    navController: NavHostController
 ) {
     val (searchTerm, updateSearchTerm) = remember { mutableStateOf(TextFieldValue("")) }
     LazyColumn(
@@ -63,8 +68,18 @@ fun SearchCourses(
             .statusBarsPadding()
             .fillMaxHeight()
     ) {
+
         item { AppBar(searchTerm, updateSearchTerm) }
         val filteredTopics = getTopics(searchTerm.text, topics)
+        item {
+            IconButton(onClick = { navController.navigate("courses/my") } ) {
+                Icon(
+                    imageVector = Icons.Rounded.ArrowBack,
+                    contentDescription = stringResource(R.string.label_back)
+                )
+            }
+        }
+
         items(
             items = filteredTopics,
             key = { it.name }
@@ -84,6 +99,7 @@ fun SearchCourses(
                     .wrapContentWidth(Alignment.Start)
                     .animateItemPlacement()
             )
+
         }
     }
 }
@@ -141,10 +157,3 @@ private fun AppBar(
     }
 }
 
-@Preview(name = "Search Courses")
-@Composable
-private fun FeaturedCoursesPreview() {
-    BlueTheme {
-        SearchCourses(topics, Modifier)
-    }
-}

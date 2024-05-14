@@ -16,58 +16,51 @@
 
 package com.example.owl.ui.courses
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import com.example.owl.R
 import com.example.owl.model.Course
 import com.example.owl.ui.common.CourseListItem
 import com.example.owl.ui.theme.BlueTheme
 import com.example.owl.ui.common.PersonListItem
 
 
-@Composable
-fun MyCourses(
-    courses: List<Course>,
-    selectCourse: (Long) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    LazyColumn(modifier) {
-        item {
-            Spacer(Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
-        }
-        item {
-            CoursesAppBar()
-        }
-        itemsIndexed(
-            items = courses,
-            key = { _, course -> course.id }
-        ) { index, course ->
-            MyCourse(
-                course = course,
-                index = index,
-                selectCourse = selectCourse
-            )
-        }
-    }
-}
+
 
 @Composable
 fun MyPersons(
     persons: List<Person>,
     selectPerson: (Long) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navController: NavHostController
 ) {
     LazyColumn(modifier) {
         item {
@@ -83,7 +76,8 @@ fun MyPersons(
             Myperson(
                 person = person,
                 index = index,
-                selectPerson = selectPerson
+                selectPerson = selectPerson,
+                navController = navController
             )
         }
     }
@@ -94,45 +88,42 @@ fun MyPersons(
 fun Myperson(
     person: Person,
     index: Int,
-    selectPerson: (Long) -> Unit
+    selectPerson: (Long) -> Unit,
+    navController: NavHostController
 ) {
     Row(modifier = Modifier.padding(bottom = 8.dp)) {
         val stagger = if (index % 2 == 0) 72.dp else 16.dp
         Spacer(modifier = Modifier.width(stagger))
-        PersonListItem(
-            person = person,
-            onClick = { selectPerson(person.id) },
-            shape = RoundedCornerShape(topStart = 24.dp),
-            modifier = Modifier.height(96.dp)
-        )
-    }
-}
+        Box(){
 
-@Composable
-fun MyCourse(
-    course: Course,
-    index: Int,
-    selectCourse: (Long) -> Unit
-) {
-    Row(modifier = Modifier.padding(bottom = 8.dp)) {
-        val stagger = if (index % 2 == 0) 72.dp else 16.dp
+        }
         Spacer(modifier = Modifier.width(stagger))
-        CourseListItem(
-            course = course,
-            onClick = { selectCourse(course.id) },
-            shape = RoundedCornerShape(topStart = 24.dp),
-            modifier = Modifier.height(96.dp)
-        )
+        Box(){
+
+            PersonListItem(
+                person = person,
+                onClick = { },
+                shape = RoundedCornerShape(topStart = 24.dp),
+                modifier = Modifier.height(96.dp)
+            )
+
+            Button(onClick = {
+                navController.navigate("courses/search"){
+                    popUpTo(navController.graph.startDestinationId) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+                             },
+                modifier = Modifier
+                    .width(55 .dp)
+                    .align(Alignment.BottomEnd),) {
+                Text(text = "Next", fontSize = 7.sp)
+            }
+        }
+
     }
 }
 
-@Preview(name = "My Persons")
-@Composable
-private fun MyCoursesPreview() {
-    BlueTheme {
-        MyPersons(
-            persons = persons,
-            selectPerson= { }
-        )
-    }
-}
+

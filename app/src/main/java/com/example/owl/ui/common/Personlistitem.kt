@@ -68,11 +68,7 @@ fun PersonListItem(
         modifier = modifier
     ) {
         Row(modifier = Modifier.clickable(onClick = onClick)) {
-            NetworkImage(
-                url = person.thumbUrl,
-                contentDescription = null,
-                modifier = Modifier.aspectRatio(1f)
-            )
+
             Column(
                 modifier = Modifier.padding(
                     start = 16.dp,
@@ -91,20 +87,9 @@ fun PersonListItem(
                         .padding(bottom = 4.dp)
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Rounded.OndemandVideo,
-                        tint = MaterialTheme.colors.primary,
-                        contentDescription = null,
-                        modifier = Modifier.size(iconSize)
-                    )
 
-                    NetworkImage(
-                        url = person.instructor,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(28.dp)
-                            .clip(CircleShape)
-                    )
+
+
                 }
             }
         }

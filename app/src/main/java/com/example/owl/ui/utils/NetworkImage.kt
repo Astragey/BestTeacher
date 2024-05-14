@@ -16,6 +16,9 @@
 
 package com.example.owl.ui.utils
 
+import android.graphics.drawable.BitmapDrawable
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -29,11 +32,19 @@ import coil.size.pxOrElse
 import com.example.owl.R
 import com.example.owl.ui.theme.compositedOnSurface
 import okhttp3.HttpUrl.Companion.toHttpUrl
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.ui.platform.LocalContext
+import coil.ImageLoader
+import coil.request.ImageRequest
 
 /**
  * A wrapper around [AsyncImage], setting a default [contentScale] and showing
  * content while loading.
  */
+
+
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun NetworkImage(
     url: String,
@@ -42,13 +53,52 @@ fun NetworkImage(
     contentScale: ContentScale = ContentScale.Crop,
     placeholderColor: Color = MaterialTheme.colors.compositedOnSurface(0.2f)
 ) {
-    AsyncImage(
-        model = url,
-        contentDescription = contentDescription,
-        placeholder = painterResource(R.drawable.photo_architecture),
-        modifier = modifier,
-        contentScale = contentScale
+
+
+    val imageUrls = listOf(
+        "http://123.60.217.228:8000/image?name=test.jpg",
+        "https://images.unsplash.com/photo-1508261301902-79a2d8e78f71",
     )
+    val pagerState = rememberPagerState(pageCount = { imageUrls.size })
+    val placeholder = painterResource(R.drawable.photo_architecture)
+
+//    val request = ImageRequest.Builder(LocalContext.current)
+//        .data("http://123.60.217.228:8000/image?name=test.jpg")
+//        .build()
+
+
+    HorizontalPager(
+        state = pagerState,
+        modifier = modifier.fillMaxSize()
+    ) { page ->
+        println("12345")
+        AsyncImage(
+            model = imageUrls[page],
+            contentDescription = contentDescription,
+            placeholder = placeholder,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = contentScale
+        )
+        println("6789")
+
+
+    }
+
+
+//    AsyncImage(
+//        model = url,
+//        contentDescription = contentDescription,
+//        placeholder = painterResource(R.drawable.photo_architecture),
+//        modifier = modifier,
+//        contentScale = contentScale
+////        onSuccess = { bitmap ->
+////            val drawable = BitmapDrawable(LocalContext.current.resources, bitmap)
+////            // Use the drawable bitmap
+////        },
+////        onError = {
+////            // Handle image load error
+////        }
+//    )
 }
 
 /**
