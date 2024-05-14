@@ -20,7 +20,6 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation.Vertical
 import androidx.compose.foundation.layout.Box
@@ -43,7 +42,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
@@ -77,7 +75,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
@@ -87,7 +84,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.owl.R
 import com.example.owl.model.Course
 import com.example.owl.model.CourseRepo
@@ -104,7 +100,6 @@ import com.example.owl.ui.utils.lerp
 import com.example.owl.ui.utils.scrim
 import java.util.Locale
 import kotlinx.coroutines.launch
-import androidx.compose.ui.graphics.graphicsLayer
 
 private val FabSize = 56.dp
 private const val ExpandedSheetAlpha = 0.96f
@@ -178,7 +173,6 @@ fun CourseDetails(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun CourseDescription(
     course: Course,
@@ -187,30 +181,26 @@ private fun CourseDescription(
 ) {
     Surface(modifier = Modifier.fillMaxSize()) {
         LazyColumn {
-            // 使用 stickyHeader 来使 CourseDescriptionHeader 不随页面滚动
-            stickyHeader {
-                CourseDescriptionHeader(course, upPress)
-            }
+            item { CourseDescriptionHeader(course, upPress) }
             item { CourseDescriptionBody(course) }
             item { RelatedCourses(course.id, selectCourse) }
         }
     }
 }
+
 @Composable
 private fun CourseDescriptionHeader(
     course: Course,
     upPress: () -> Unit
 ) {
-
-    Box() {
+    Box {
         NetworkImage(
             url = course.thumbUrl,
             contentDescription = null,
             modifier = Modifier
+                .fillMaxWidth()
                 .scrim(colors = listOf(Color(0x80000000), Color(0x33000000)))
                 .aspectRatio(4f / 3f)
-                .background(Color.White)
-                .shadow(20.dp, shape = RoundedCornerShape(17.dp))
         )
         TopAppBar(
             backgroundColor = Color.Transparent,
@@ -244,7 +234,6 @@ private fun CourseDescriptionHeader(
     }
 }
 
-
 @Composable
 private fun CourseDescriptionBody(course: Course) {
     Text(
@@ -262,7 +251,7 @@ private fun CourseDescriptionBody(course: Course) {
             )
     )
     Text(
-        text = course.name,  // Name Here
+        text = course.name,
         style = MaterialTheme.typography.h4,
         textAlign = TextAlign.Center,
         modifier = Modifier

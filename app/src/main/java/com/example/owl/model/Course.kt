@@ -88,7 +88,7 @@ val courses = listOf(
     Course(
         id = 5,
         name = "Advanced Potter's Wheel",
-        subject = "带派",
+        subject = "Arts & Crafts",
         thumbUrl = "https://images.unsplash.com/photo-1513096082106-f68f05c8c21c",
         thumbContentDesc = "",
         steps = 14,

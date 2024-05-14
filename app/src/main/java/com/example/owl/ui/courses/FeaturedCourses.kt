@@ -63,7 +63,6 @@ fun FeaturedCourses(
             .verticalScroll(rememberScrollState())
             .statusBarsPadding()
     ) {
-
         CoursesAppBar()
         StaggeredVerticalGrid(
             maxColumnWidth = 220.dp,
@@ -99,7 +98,16 @@ fun FeaturedCourse(
                 }
         ) {
             val (image, avatar, subject, name, steps, icon) = createRefs()
-
+            NetworkImage(
+                url = course.thumbUrl,
+                contentDescription = null,
+                modifier = Modifier
+                    .aspectRatio(4f / 3f)
+                    .constrainAs(image) {
+                        centerHorizontallyTo(parent)
+                        top.linkTo(parent.top)
+                    }
+            )
             val outlineColor = LocalElevationOverlay.current?.apply(
                 color = MaterialTheme.colors.surface,
                 elevation = OwlTheme.elevations.card
@@ -126,7 +134,7 @@ fun FeaturedCourse(
                     }
             )
             Text(
-                text = course.name, //首页里的name
+                text = course.name,
                 style = MaterialTheme.typography.subtitle1,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
@@ -136,7 +144,6 @@ fun FeaturedCourse(
                         top.linkTo(subject.bottom)
                     }
             )
-
             val center = createGuidelineFromStart(0.5f)
             Icon(
                 imageVector = Icons.Rounded.OndemandVideo,
@@ -162,16 +169,6 @@ fun FeaturedCourse(
                     .constrainAs(steps) {
                         start.linkTo(center)
                         top.linkTo(name.bottom)
-                    }
-            )
-            NetworkImage(
-                url = course.thumbUrl,
-                contentDescription = null,
-                modifier = Modifier
-                    .aspectRatio(4f / 3f)
-                    .constrainAs(image) {
-                        centerHorizontallyTo(parent)
-                        top.linkTo(parent.top)
                     }
             )
         }

@@ -48,10 +48,13 @@ import com.example.owl.model.courses
 import com.example.owl.ui.theme.BlueTheme
 import com.example.owl.ui.theme.OwlTheme
 import com.example.owl.ui.utils.NetworkImage
+import com.example.owl.ui.courses.Person
+import com.example.owl.ui.courses.persons
+
 
 @Composable
-fun CourseListItem(
-    course: Course,
+fun PersonListItem(
+    person: Person,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     shape: Shape = RectangleShape,
@@ -66,7 +69,7 @@ fun CourseListItem(
     ) {
         Row(modifier = Modifier.clickable(onClick = onClick)) {
             NetworkImage(
-                url = course.thumbUrl,
+                url = person.thumbUrl,
                 contentDescription = null,
                 modifier = Modifier.aspectRatio(1f)
             )
@@ -79,7 +82,7 @@ fun CourseListItem(
                 )
             ) {
                 Text(
-                    text = course.name,
+                    text = person.name,
                     style = titleStyle,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
@@ -94,21 +97,9 @@ fun CourseListItem(
                         contentDescription = null,
                         modifier = Modifier.size(iconSize)
                     )
-                    Text(
-                        text = stringResource(
-                            R.string.course_step_steps,
-                            course.step,
-                            course.steps
-                        ),
-                        color = MaterialTheme.colors.primary,
-                        style = MaterialTheme.typography.caption,
-                        modifier = Modifier
-                            .padding(start = 8.dp)
-                            .weight(1f)
-                            .wrapContentWidth(Alignment.Start)
-                    )
+
                     NetworkImage(
-                        url = course.instructor,
+                        url = person.instructor,
                         contentDescription = null,
                         modifier = Modifier
                             .size(28.dp)
@@ -117,9 +108,9 @@ fun CourseListItem(
                 }
             }
         }
-
     }
 }
+
 
 @Preview(name = "Course list item")
 @Composable
@@ -136,8 +127,8 @@ private fun CourseListItemPreviewDark() {
 @Composable
 private fun CourseListItemPreview(darkTheme: Boolean) {
     BlueTheme(darkTheme) {
-        CourseListItem(
-            course = courses.first(),
+        PersonListItem(
+            person = persons.first(),
             onClick = {},
             modifier = Modifier
                 .padding(end = 8.dp)
