@@ -47,5 +47,4 @@ def sync_vivogpt():
 
 
 
-while(1):
-    sync_vivogpt()
+sync_vivogpt()

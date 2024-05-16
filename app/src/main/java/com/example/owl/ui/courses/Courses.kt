@@ -87,7 +87,7 @@ fun NavGraphBuilder.courses(
         )
     }
     composable("courses/search") {backStackEntry: NavBackStackEntry ->
-        SearchCourses(topics, modifier,upPress = { actions.upPress(backStackEntry) },navController)
+       SearchCourses(topics, modifier,upPress = { actions.upPress(backStackEntry) },navController)
     }
 
 }

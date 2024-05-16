@@ -16,9 +16,6 @@
 
 package com.example.owl.ui.courses
 
-import android.annotation.SuppressLint
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -58,39 +55,47 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.owl.R
 import com.example.owl.model.Topic
-import java.io.File
-import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 
-import java.io.BufferedReader
-import java.io.InputStreamReader
+import okhttp3.Callback
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
+import java.io.IOException
 
-fun getapires(): String {
-    val pb = ProcessBuilder("python", "app/src/main/java/pythonProject/api.py")
-    pb.redirectErrorStream(true)
-    val process = pb.start()
+suspend fun performLongRunningTask(prompt: String): String {
+    val client = OkHttpClient()
+    var res = "111"
+    val url = "http://123.60.217.228:7001/api/ai/$prompt"
+    val request = Request.Builder()
+        .url(url)
+        .build()
 
-    val reader = BufferedReader(InputStreamReader(process.inputStream))
-    var line: String?
-    var res=""
-    while (reader.readLine().also { line = it } != null) {
-        println(line)
-        res= res+line
+    // 使用协程发送网络请求
+    val response = withContext(Dispatchers.IO) {
+        try {
+            client.newCall(request).execute()
+        } catch (e: IOException) {
+            null
+        }
     }
 
-    val exitCode = process.waitFor()
-    println("Python script execution finished with exit code $exitCode")
+    // 处理服务器响应
+    response?.use {
+        if (!it.isSuccessful) throw IOException("Unexpected code ${it.code}")
+
+        val responseBody = it.body?.string()
+        println("HERE RES $responseBody")
+        res = responseBody ?: ""
+    }
+
+    println("RES123 $res")
     return res
 }
 
-fun main() {
-    print(getapires())
-}
-
-
-@RequiresApi(Build.VERSION_CODES.O)
-@SuppressLint("RememberReturnType")
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchCourses(
     topics: List<Topic>,
@@ -98,6 +103,7 @@ fun SearchCourses(
     upPress: () -> Unit,
     navController: NavHostController
 ) {
+    var temp = ""
     val (searchTerm, updateSearchTerm) = remember { mutableStateOf(TextFieldValue("")) }
     LazyColumn(
         modifier = modifier
@@ -108,7 +114,9 @@ fun SearchCourses(
         item { AppBar(searchTerm, updateSearchTerm) }
         val filteredTopics = getTopics(searchTerm.text, topics)
         item {
-            IconButton(onClick = { navController.navigate("courses/my") } ) {
+            IconButton(onClick = {
+                navController.navigate("courses/my")
+            } ) {
                 Icon(
                     imageVector = Icons.Rounded.ArrowBack,
                     contentDescription = stringResource(R.string.label_back)
@@ -116,6 +124,7 @@ fun SearchCourses(
             }
         }
         item {
+
             val textState = remember { mutableStateOf(TextFieldValue()) }
             Box(
                 modifier = Modifier
@@ -123,7 +132,7 @@ fun SearchCourses(
                     .padding(16.dp),
                 contentAlignment = Alignment.Center // 内容居中对齐
             ) {
-                val temp = ""
+
 
                 TextField(
                     value = textState.value,
@@ -139,12 +148,19 @@ fun SearchCourses(
                     keyboardOptions = KeyboardOptions.Default.copy(
                         // 定义按下回车时的行为
                         imeAction = ImeAction.Done
-                    ),
+                                ),
 
                     keyboardActions = KeyboardActions(
                         onDone = {
                             // 在按下回车时清空文本框内容
+                            println(textState.value.text)
+                            runBlocking {
+                                temp = performLongRunningTask("写一首关于冬天的古诗，要求词藻华丽")
+                                println("Server Response: $temp")
+                            }
+
                             textState.value = TextFieldValue()
+
 
                         }
                     )
@@ -159,7 +175,7 @@ fun SearchCourses(
 
 
                 Text(
-                    text = "The textfield has this text: " ,
+                    text = temp,
                     modifier = Modifier
                         // 添加顶部间距
                         .align(Alignment.Center), // 文本居底部居中对齐

@@ -109,11 +109,6 @@ fun Myperson(
 
             Button(onClick = {
                 navController.navigate("courses/search"){
-                    popUpTo(navController.graph.startDestinationId) {
-                        saveState = true
-                    }
-                    launchSingleTop = true
-                    restoreState = true
                 }
                              },
                 modifier = Modifier
