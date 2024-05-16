@@ -16,6 +16,7 @@
 
 package com.example.owl.ui.course
 
+import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -98,12 +99,82 @@ import com.example.owl.ui.theme.pink500
 import com.example.owl.ui.utils.NetworkImage
 import com.example.owl.ui.utils.lerp
 import com.example.owl.ui.utils.scrim
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import java.util.Locale
 import kotlinx.coroutines.launch
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
+import okhttp3.Callback
+import java.io.IOException
 
 private val FabSize = 56.dp
 private const val ExpandedSheetAlpha = 0.96f
 
+var poemRes: String = "111"
+
+fun performLongRunningTask(poemId: Long): String {
+    // 模拟耗时操作
+    //首先，需要创建一个OkHttpClient实例
+    val client = OkHttpClient()
+
+    //创建一个Request对象,url为请求的链接，下面不做解释，括号中的url根据实际填入http连接
+    //例如，val url = "https://www.baidu.com/"，以下同理，url为String
+    // 类型
+    val url = "http://123.60.217.228:7000/api/poem/$poemId"
+    val request = Request.Builder()
+        .url(url)
+        .build()
+
+
+    // 使用 OkHttpClient 发起异步请求
+    client.newCall(request).enqueue(object : Callback {
+        override fun onFailure(call: okhttp3.Call, e: IOException) {
+            // 处理请求失败
+            e.printStackTrace()
+        }
+
+        override fun onResponse(call: okhttp3.Call, response: Response) {
+            // 处理响应
+            response.use {
+                if (!it.isSuccessful) throw IOException("Unexpected code $response")
+
+                // 获取响应体
+                val responseBody = it.body?.string()
+                println("HERE RES $responseBody")
+                poemRes = responseBody!!
+
+            }
+        }
+    })
+    //调用OkHttpClient的newCall()方法来创建一个Call对象，
+    //并调用它的execute()方法来发送请求并获取服务器返回的数据
+//    return try {
+//        // 创建并发送请求
+//        val response: Response = client.newCall(request).execute()
+//
+//        // 检查响应是否成功
+//        if (response.isSuccessful) {
+//            // 获取响应内容
+//            response.body?.string() ?: "No response body"
+//        } else {
+//            "Request failed with code: ${response.code}"
+//        }
+//    } catch (e: IOException) {
+//        // 捕获网络异常
+//        "Network error: ${e.message}"
+//    } catch (e: Exception) {
+//        // 捕获其他异常
+//        "Unexpected error: ${e.message}"
+//    }
+    println("RES123 $poemRes")
+    return poemRes
+}
+
+// @SuppressLint("CoroutineCreationDuringComposition")
+// @OptIn(DelicateCoroutinesApi::class)
 @Composable
 fun CourseDetails(
     courseId: Long,
@@ -112,17 +183,43 @@ fun CourseDetails(
 ) {
     // Simplified for the sample
     val course = remember(courseId) { CourseRepo.getCourse(courseId) }
+    var poem = ""
+//    GlobalScope.launch(Dispatchers.IO) {
+//        val tempResult = performLongRunningTask(1)
+//        println("Respon123 $tempResult")
+//        poem = tempResult
+////        val parts = tempResult.split(";")
+////
+////        if (parts.size >= 4) {
+////            val part1 = parts[0]
+////            val part2 = parts[1]
+////            val part3 = parts[2]
+////            val part4 = parts[3]
+////
+////            println("Part 1: $part1")
+////            println("Part 2: $part2")
+////            println("Part 3: $part3")
+////            println("Part 4: $part4")
+////        } else {
+////            println("Input string does not contain enough parts")
+////        }
+//    }
+    val tempResult = performLongRunningTask(1)
+    println("Respon123 $tempResult")
+    poem = tempResult
     // TODO: Show error if course not found.
-    CourseDetails(course, selectCourse, upPress)
+    CourseDetails(course, poem, selectCourse, upPress)
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CourseDetails(
     course: Course,
+    poem: String,
     selectCourse: (Long) -> Unit,
     upPress: () -> Unit
 ) {
+    println("Poem is $poem")
     PinkTheme {
         BoxWithConstraints {
             val sheetState = rememberSwipeableState(SheetState.Closed)
@@ -157,7 +254,7 @@ fun CourseDetails(
                 } else {
                     -sheetState.offset.value / dragRange
                 }.coerceIn(0f, 1f)
-                CourseDescription(course, selectCourse, upPress)
+                CourseDescription(course, poem, selectCourse, upPress)
                 LessonsSheet(
                     course,
                     openFraction,
@@ -176,13 +273,14 @@ fun CourseDetails(
 @Composable
 private fun CourseDescription(
     course: Course,
+    poem: String,
     selectCourse: (Long) -> Unit,
     upPress: () -> Unit
 ) {
     Surface(modifier = Modifier.fillMaxSize()) {
         LazyColumn {
-            item { CourseDescriptionHeader(course, upPress) }
-            item { CourseDescriptionBody(course) }
+            item { CourseDescriptionHeader(course, poem, upPress) }
+            item { CourseDescriptionBody(course, poem) }
             item { RelatedCourses(course.id, selectCourse) }
         }
     }
@@ -191,11 +289,33 @@ private fun CourseDescription(
 @Composable
 private fun CourseDescriptionHeader(
     course: Course,
+    poem: String,
     upPress: () -> Unit
 ) {
+    val parts = poem.split(";")
+
+    var title = ""
+    var dynasty = ""
+    var content = ""
+    var userName = ""
+
+    if (parts.size >= 4) {
+        title = parts[4]
+        dynasty = parts[3]
+        content = parts[5]
+        userName = parts[2]
+
+        println("Part 1: $title")
+        println("Part 2: $dynasty")
+        println("Part 3: $content")
+        println("Part 4: $userName")
+    } else {
+        println("Input string does not contain enough parts")
+    }
+
     Box {
         NetworkImage(
-            url = course.thumbUrl,
+            url = "http://123.60.217.228:8000/image?name=$dynasty",
             contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth()
@@ -235,9 +355,31 @@ private fun CourseDescriptionHeader(
 }
 
 @Composable
-private fun CourseDescriptionBody(course: Course) {
+private fun CourseDescriptionBody(course: Course, poem: String) {
+
+    val parts = poem.split(";")
+
+    var title = ""
+    var dynasty = ""
+    var content = ""
+    var userName = ""
+
+    if (parts.size >= 4) {
+        title = parts[4]
+        dynasty = parts[3]
+        content = parts[5]
+        userName = parts[2]
+
+        println("HEREPart 1: $title")
+        println("Part 2: $dynasty")
+        println("Part 3: $content")
+        println("Part 4: $userName")
+    } else {
+        println("Input string does not contain enough parts")
+    }
+
     Text(
-        text = course.subject.uppercase(Locale.getDefault()),
+        text = "$userName $dynasty",
         color = MaterialTheme.colors.primary,
         style = MaterialTheme.typography.body2,
         textAlign = TextAlign.Center,
@@ -251,7 +393,7 @@ private fun CourseDescriptionBody(course: Course) {
             )
     )
     Text(
-        text = course.name,
+        text = title,
         style = MaterialTheme.typography.h4,
         textAlign = TextAlign.Center,
         modifier = Modifier
@@ -261,7 +403,7 @@ private fun CourseDescriptionBody(course: Course) {
     Spacer(modifier = Modifier.height(16.dp))
     CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
         Text(
-            text = stringResource(id = R.string.course_desc),
+            text = content,
             style = MaterialTheme.typography.body1,
             textAlign = TextAlign.Center,
             modifier = Modifier

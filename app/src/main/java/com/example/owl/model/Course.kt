@@ -42,8 +42,8 @@ object CourseRepo {
 val courses = listOf(
     Course(
         id = 0,
-        name = "Basic Blocks and Woodturning",
-        subject = "Arts & Crafts",
+        name = "静夜思",
+        subject = "唐 李白",
         thumbUrl = "https://images.unsplash.com/photo-1516562309708-05f3b2b2c238",
         thumbContentDesc = "",
         steps = 7,
@@ -51,110 +51,121 @@ val courses = listOf(
     ),
     Course(
         id = 1,
-        name = "An Introduction To Oil Painting On Canvas",
-        subject = "Painting",
-        thumbUrl = "https://images.unsplash.com/photo-1508261301902-79a2d8e78f71",
+        name = "将进酒",
+        subject = "唐 李白",
+        thumbUrl = "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0",
         thumbContentDesc = "",
-        steps = 12,
+        steps = 5,
         step = 1
     ),
+
     Course(
         id = 2,
-        name = "Understanding the Composition of Modern Cities",
-        subject = "Architecture",
-        thumbUrl = "https://images.unsplash.com/photo-1519999482648-25049ddd37b1",
+        name = "春晓",
+        subject = "唐 孟浩然",
+        thumbUrl = "https://images.unsplash.com/photo-1470740700928-18938af6c8e0",
         thumbContentDesc = "",
-        steps = 18,
+        steps = 4,
         step = 1
     ),
+
     Course(
         id = 3,
-        name = "Learning The Basics of Brand Identity",
-        subject = "Design",
-        thumbUrl = "https://images.unsplash.com/photo-1517602302552-471fe67acf66",
-        thumbContentDesc = "",
-        steps = 22,
-        step = 1
-    ),
-    Course(
-        id = 4,
-        name = "Wooden Materials and Sculpting Machinery",
-        subject = "Arts & Crafts",
-        thumbUrl = "https://images.unsplash.com/photo-1547609434-b732edfee020",
-        thumbContentDesc = "",
-        steps = 19,
-        step = 1
-    ),
-    Course(
-        id = 5,
-        name = "Advanced Potter's Wheel",
-        subject = "Arts & Crafts",
-        thumbUrl = "https://images.unsplash.com/photo-1513096082106-f68f05c8c21c",
-        thumbContentDesc = "",
-        steps = 14,
-        step = 1
-    ),
-    Course(
-        id = 6,
-        name = "Advanced Abstract Shapes & 3D Printing",
-        subject = "Arts & Crafts",
-        thumbUrl = "https://images.unsplash.com/photo-1461887046916-c7426e65460d",
-        thumbContentDesc = "",
-        steps = 17,
-        step = 1
-    ),
-    Course(
-        id = 7,
-        name = "Beginning Portraiture",
-        subject = "Photography",
-        thumbUrl = "https://images.unsplash.com/photo-1555940451-2480c214446f",
-        thumbContentDesc = "",
-        steps = 22,
-        step = 1
-    ),
-    Course(
-        id = 8,
-        name = "Intermediate Knife Skills",
-        subject = "Culinary",
-        thumbUrl = "https://images.unsplash.com/photo-1544965838-54ef8406f868",
-        thumbContentDesc = "",
-        steps = 14,
-        step = 1
-    ),
-    Course(
-        id = 9,
-        name = "Pattern Making for Beginners",
-        subject = "Fashion",
-        thumbUrl = "https://images.unsplash.com/photo-1552737894-aae873ee2737",
-        thumbContentDesc = "",
-        steps = 7,
-        step = 1
-    ),
-    Course(
-        id = 10,
-        name = "Location Lighting for Beginners",
-        subject = "Photography",
-        thumbUrl = "https://images.unsplash.com/photo-1554941829-202a0b2403b8",
+        name = "登鹳雀楼",
+        subject = "唐 王之涣",
+        thumbUrl = "https://images.unsplash.com/photo-1494783367193-149034c05e8f",
         thumbContentDesc = "",
         steps = 6,
         step = 1
     ),
+
     Course(
-        id = 11,
-        name = "Cinematography & Lighting",
-        subject = "Film",
-        thumbUrl = "https://images.unsplash.com/photo-1517523267857-911eef21acae",
+        id = 4,
+        name = "枫桥夜泊",
+        subject = "唐 张继",
+        thumbUrl = "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0",
+        thumbContentDesc = "",
+        steps = 8,
+        step = 1
+    ),
+
+    Course(
+        id = 5,
+        name = "送杜少府之任蜀州",
+        subject = "唐 王勃",
+        thumbUrl = "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0",
+        thumbContentDesc = "",
+        steps = 5,
+        step = 1
+    ),
+
+    Course(
+        id = 6,
+        name = "游子吟",
+        subject = "唐 孟郊",
+        thumbUrl = "https://images.unsplash.com/photo-1483794344563-d27a8d38e87b",
         thumbContentDesc = "",
         steps = 4,
         step = 1
     ),
+
+    Course(
+        id = 7,
+        name = "黄鹤楼送孟浩然之广陵",
+        subject = "唐 李白",
+        thumbUrl = "https://images.unsplash.com/photo-1517677208171-0bc6725a3e60",
+        thumbContentDesc = "",
+        steps = 6,
+        step = 1
+    ),
+
+    Course(
+        id = 8,
+        name = "静夜思",
+        subject = "唐 李白",
+        thumbUrl = "https://images.unsplash.com/photo-1516562309708-05f3b2b2c238",
+        thumbContentDesc = "",
+        steps = 7,
+        step = 1
+    ),
+
+    Course(
+        id = 9,
+        name = "早发白帝城",
+        subject = "唐 李白",
+        thumbUrl = "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0",
+        thumbContentDesc = "",
+        steps = 5,
+        step = 1
+    ),
+
+    Course(
+        id = 10,
+        name = "秋词",
+        subject = "唐 刘禹锡",
+        thumbUrl = "https://images.unsplash.com/photo-1470740700928-18938af6c8e0",
+        thumbContentDesc = "",
+        steps = 3,
+        step = 1
+    ),
+
+    Course(
+        id = 11,
+        name = "闻王昌龄左迁龙标遥有此寄",
+        subject = "唐 李白",
+        thumbUrl = "https://images.unsplash.com/photo-1494783367193-149034c05e8f",
+        thumbContentDesc = "",
+        steps = 6,
+        step = 1
+    ),
+
     Course(
         id = 12,
-        name = "Monuments, Buildings & Other Structures",
-        subject = "Photography",
-        thumbUrl = "https://images.unsplash.com/photo-1494145904049-0dca59b4bbad",
+        name = "夜泊牛渚怀古",
+        subject = "唐 李白",
+        thumbUrl = "https://images.unsplash.com/photo-1483794344563-d27a8d38e87b",
         thumbContentDesc = "",
         steps = 4,
         step = 1
-    )
+    ),
 )

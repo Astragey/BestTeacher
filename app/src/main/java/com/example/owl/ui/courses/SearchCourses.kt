@@ -16,23 +16,28 @@
 
 package com.example.owl.ui.courses
 
+import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.Button
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -42,18 +47,49 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.owl.R
 import com.example.owl.model.Topic
-import com.example.owl.model.topics
-import com.example.owl.ui.theme.BlueTheme
+import java.io.File
+import java.util.concurrent.TimeUnit
 
+
+import java.io.BufferedReader
+import java.io.InputStreamReader
+
+fun getapires(): String {
+    val pb = ProcessBuilder("python", "app/src/main/java/pythonProject/api.py")
+    pb.redirectErrorStream(true)
+    val process = pb.start()
+
+    val reader = BufferedReader(InputStreamReader(process.inputStream))
+    var line: String?
+    var res=""
+    while (reader.readLine().also { line = it } != null) {
+        println(line)
+        res= res+line
+    }
+
+    val exitCode = process.waitFor()
+    println("Python script execution finished with exit code $exitCode")
+    return res
+}
+
+fun main() {
+    print(getapires())
+}
+
+
+@RequiresApi(Build.VERSION_CODES.O)
+@SuppressLint("RememberReturnType")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchCourses(
@@ -79,28 +115,59 @@ fun SearchCourses(
                 )
             }
         }
-
-        items(
-            items = filteredTopics,
-            key = { it.name }
-        ) { topic ->
-            Text(
-                text = topic.name,
-                style = MaterialTheme.typography.h5,
+        item {
+            val textState = remember { mutableStateOf(TextFieldValue()) }
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable(onClick = { /* todo */ })
-                    .padding(
-                        start = 16.dp,
-                        top = 8.dp,
-                        end = 16.dp,
-                        bottom = 8.dp
-                    )
-                    .wrapContentWidth(Alignment.Start)
-                    .animateItemPlacement()
-            )
+                    .fillMaxSize()
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center // 内容居中对齐
+            ) {
+                val temp = ""
 
+                TextField(
+                    value = textState.value,
+                    onValueChange = {
+                        // 在输入文本时更新文本状态
+                        textState.value = it
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth() // 填充最大宽度
+                        .padding(16.dp) // 添加内边距
+                        .heightIn(min = 56.dp), // 设置最小高度，确保文本框有一定的高度
+                    textStyle = TextStyle(color = Color.White), // 将文本颜色设置为白色
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        // 定义按下回车时的行为
+                        imeAction = ImeAction.Done
+                    ),
+
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            // 在按下回车时清空文本框内容
+                            textState.value = TextFieldValue()
+
+                        }
+                    )
+                )
+
+
+            }
+            Box( modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+                contentAlignment = Alignment.Center){
+
+
+                Text(
+                    text = "The textfield has this text: " ,
+                    modifier = Modifier
+                        // 添加顶部间距
+                        .align(Alignment.Center), // 文本居底部居中对齐
+                )
+
+            }
         }
+
     }
 }
 
@@ -156,4 +223,3 @@ private fun AppBar(
         }
     }
 }
-
