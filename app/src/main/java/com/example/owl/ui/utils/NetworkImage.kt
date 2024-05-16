@@ -56,7 +56,7 @@ fun NetworkImage(
 
 
     val imageUrls = listOf(
-        "http://123.60.217.228:8000/image?name=test.jpg",
+        "http://123.60.217.228:8000/image?name=tang",
         "https://images.unsplash.com/photo-1508261301902-79a2d8e78f71",
     )
     val pagerState = rememberPagerState(pageCount = { imageUrls.size })
