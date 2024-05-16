@@ -87,7 +87,7 @@ fun NavGraphBuilder.courses(
         )
     }
     composable("courses/search") {backStackEntry: NavBackStackEntry ->
-       SearchCourses(topics, modifier,upPress = { actions.upPress(backStackEntry) },navController)
+       SearchCourses(modifier,navController)
     }
 
 }
@@ -102,7 +102,7 @@ fun PersonAppBar() {
             modifier = Modifier
                 .padding(16.dp)
                 .align(Alignment.CenterVertically),
-            painter = painterResource(id = R.drawable.ic_lockup_white),
+            painter = painterResource(id = R.drawable.logo_title),
             contentDescription = null
         )
 
@@ -149,7 +149,7 @@ fun CoursesAppBar() {
             modifier = Modifier
                 .padding(16.dp)
                 .align(Alignment.CenterVertically),
-            painter = painterResource(id = R.drawable.ic_lockup_white),
+            painter = painterResource(id = R.drawable.logo_title),
             contentDescription = null
         )
 

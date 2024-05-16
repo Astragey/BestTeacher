@@ -18,7 +18,9 @@ package com.example.owl.ui.courses
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -43,18 +45,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.BottomCenter
+import androidx.compose.ui.Alignment.Companion.Center
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.owl.R
 import com.example.owl.model.Topic
+import com.example.owl.model.courses
+import com.example.owl.ui.theme.BlueTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -98,9 +109,7 @@ suspend fun performLongRunningTask(prompt: String): String {
 
 @Composable
 fun SearchCourses(
-    topics: List<Topic>,
     modifier: Modifier = Modifier,
-    upPress: () -> Unit,
     navController: NavHostController
 ) {
     var temp = ""
@@ -112,7 +121,7 @@ fun SearchCourses(
     ) {
 
         item { AppBar(searchTerm, updateSearchTerm) }
-        val filteredTopics = getTopics(searchTerm.text, topics)
+
         item {
             IconButton(onClick = {
                 navController.navigate("courses/my")
@@ -173,7 +182,6 @@ fun SearchCourses(
                 .padding(16.dp),
                 contentAlignment = Alignment.Center){
 
-
                 Text(
                     text = temp,
                     modifier = Modifier
@@ -208,34 +216,17 @@ private fun AppBar(
     updateSearchTerm: (TextFieldValue) -> Unit
 ) {
     TopAppBar(elevation = 0.dp) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_search),
-            contentDescription = null,
-            modifier = Modifier
-                .padding(16.dp)
-                .align(Alignment.CenterVertically)
-        )
-        // TODO hint
-        BasicTextField(
-            value = searchTerm,
-            onValueChange = updateSearchTerm,
-            textStyle = MaterialTheme.typography.subtitle1.copy(
-                color = LocalContentColor.current
-            ),
-            maxLines = 1,
-            cursorBrush = SolidColor(LocalContentColor.current),
-            modifier = Modifier
-                .weight(1f)
-                .align(Alignment.CenterVertically)
-        )
-        IconButton(
-            modifier = Modifier.align(Alignment.CenterVertically),
-            onClick = { /* todo */ }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
         ) {
-            Icon(
-                imageVector = Icons.Filled.AccountCircle,
-                contentDescription = stringResource(R.string.label_profile)
-            )
+            Text(
+                text = "Poem Generate",
+                fontSize = 30.sp,
+                style = MaterialTheme.typography.subtitle1
+                )
         }
     }
 }
+

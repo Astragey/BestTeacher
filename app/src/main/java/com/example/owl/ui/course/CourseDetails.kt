@@ -335,7 +335,7 @@ private fun CourseDescriptionHeader(
                 )
             }
             Image(
-                painter = painterResource(id = R.drawable.ic_logo),
+                painter = painterResource(id = R.drawable.logo_title),
                 contentDescription = null,
                 modifier = Modifier
                     .padding(bottom = 4.dp)

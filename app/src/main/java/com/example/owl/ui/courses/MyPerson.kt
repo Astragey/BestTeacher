@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -107,14 +108,18 @@ fun Myperson(
                 modifier = Modifier.height(96.dp)
             )
 
-            Button(onClick = {
-                navController.navigate("courses/search"){
-                }
-                             },
+            Button(
+                onClick = { navController.navigate("courses/search") },
                 modifier = Modifier
-                    .width(55 .dp)
-                    .align(Alignment.BottomEnd),) {
-                Text(text = "Next", fontSize = 7.sp)
+                    .padding(end = 20.dp, bottom = 10.dp) // 调整右侧和底部的填充以将按钮左移
+                    .width(80.dp)
+                    .align(Alignment.BottomEnd)
+            ) {
+                Text(
+                    text = "Try it!",
+                    fontSize = 14.sp, // 将字体大小增加以使其更大
+                    modifier = Modifier.fillMaxWidth() // 使文本占据整个按钮的宽度
+                )
             }
         }
 
