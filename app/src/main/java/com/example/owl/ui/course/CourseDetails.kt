@@ -315,7 +315,7 @@ private fun CourseDescriptionHeader(
 
     Box {
         NetworkImage(
-            url = "http://123.60.217.228:8888/image?name=$dynasty",
+            url = "http://123.60.217.228:8000/image?name=$dynasty",
             contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth()
@@ -413,7 +413,7 @@ private fun CourseDescriptionBody(course: Course, poem: String) {
     }
     Divider(modifier = Modifier.padding(16.dp))
     Text(
-        text = stringResource(id = R.string.what_you_ll_need),
+        text = "",
         style = MaterialTheme.typography.h6,
         textAlign = TextAlign.Center,
         modifier = Modifier
@@ -422,7 +422,7 @@ private fun CourseDescriptionBody(course: Course, poem: String) {
     )
     CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
         Text(
-            text = stringResource(id = R.string.needs),
+            text = "",
             style = MaterialTheme.typography.body1,
             textAlign = TextAlign.Center,
             modifier = Modifier

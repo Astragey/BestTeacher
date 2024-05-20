@@ -118,7 +118,7 @@ fun Myperson(
             ) {
                 Text(
                     text = "Try it!",
-                    fontSize = 13.sp, // 将字体大小增加以使其更大
+                    fontSize = 14.sp, // 将字体大小增加以使其更大
                     modifier = Modifier.fillMaxWidth() // 使文本占据整个按钮的宽度
                 )
             }

@@ -23,8 +23,8 @@
     <string name="label_settings">Settings</string>
 
     <!-- Courses -->
-    <string name="my_courses">My Courses</string>
-    <string name="featured">Featured</string>
+    <string name="my_courses">My Profile</string>
+    <string name="featured">View Poems</string>
     <string name="search">Search</string>
     <string name="course_step_steps">%1$d / %2$d</string>
     <string name="label_expand_lessons">Expand lessons sheet</string>
