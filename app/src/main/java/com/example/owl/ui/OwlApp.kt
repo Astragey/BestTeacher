@@ -29,6 +29,7 @@ import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.primarySurface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -42,6 +43,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.owl.ui.courses.CourseTabs
 import com.example.owl.ui.theme.BlueTheme
+import com.google.android.material.tabs.TabItem
 import java.util.Locale
 
 @Composable

@@ -26,7 +26,7 @@ android {
     defaultConfig {
         applicationId = "com.example.owl"
         minSdk = libs.versions.minSdk.get().toInt()
-        targetSdk = libs.versions.targetSdk.get().toInt()
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
         vectorDrawables.useSupportLibrary = true
@@ -101,6 +101,8 @@ android {
 dependencies {
 
     implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.material3.android)
     val composeBom = platform(libs.androidx.compose.bom)
     implementation(composeBom)
     androidTestImplementation(composeBom)

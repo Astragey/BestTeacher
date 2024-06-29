@@ -35,12 +35,12 @@ import com.example.owl.ui.course.CourseDetails
 import com.example.owl.ui.courses.CourseTabs
 import com.example.owl.ui.courses.courses
 import com.example.owl.ui.onboarding.Onboarding
+import com.example.owl.ui.splash.SplashScreen
 
 /**
  * Destinations used in the ([OwlApp]).
  */
 object MainDestinations {
-    const val ONBOARDING_ROUTE = "onboarding"
     const val COURSES_ROUTE = "courses"
     const val COURSE_DETAIL_ROUTE = "course"
     const val COURSE_DETAIL_ID_KEY = "courseId"
@@ -51,7 +51,7 @@ fun NavGraph(
     modifier: Modifier = Modifier,
     finishActivity: () -> Unit = {},
     navController: NavHostController = rememberNavController(),
-    startDestination: String = MainDestinations.COURSES_ROUTE,
+    startDestination: String = "splash",
     showOnboardingInitially: Boolean = true
 ) {
     // Onboarding could be read from shared preferences.
@@ -65,20 +65,10 @@ fun NavGraph(
         navController = navController,
         startDestination = startDestination
     ) {
-        composable(MainDestinations.ONBOARDING_ROUTE) {
-            // Intercept back in Onboarding: make it finish the activity
-            BackHandler {
-                finishActivity()
-            }
-
-            Onboarding(
-                onboardingComplete = {
-                    // Set the flag so that onboarding is not shown next time.
-                    onboardingComplete.value = true
-                    actions.onboardingComplete()
-                }
-            )
+        composable("splash") {
+            SplashScreen(navController = navController)
         }
+
         navigation(
             route = MainDestinations.COURSES_ROUTE,
             startDestination = CourseTabs.FEATURED.route

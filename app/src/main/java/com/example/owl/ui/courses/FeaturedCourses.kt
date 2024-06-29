@@ -17,63 +17,175 @@
 package com.example.owl.ui.courses
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
-import androidx.compose.material.LocalElevationOverlay
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ViewList
+import androidx.compose.material.icons.filled.ViewModule
 import androidx.compose.material.icons.rounded.OndemandVideo
+import androidx.compose.material3.Card
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.owl.R
 import com.example.owl.model.Course
 import com.example.owl.model.courses
 import com.example.owl.ui.common.OutlinedAvatar
 import com.example.owl.ui.theme.BlueTheme
-import com.example.owl.ui.theme.OwlTheme
 import com.example.owl.ui.utils.NetworkImage
 import java.util.Locale
 import kotlin.math.ceil
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.with
 
+@Composable
+fun LayoutToggleSwitch(
+    isTwoColumnLayout: Boolean,
+    onToggle: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val customColor = Color(0xFFFF0366)
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.End,
+        modifier = modifier.fillMaxWidth()
+    ) {
+        Icon(
+            imageVector = Icons.Filled.ViewList,
+            contentDescription = "Single column layout",
+            tint = if (!isTwoColumnLayout) customColor else MaterialTheme.colors.onSurface.copy(alpha = 0.6f),
+            modifier = Modifier.size(24.dp)
+        )
+        Switch(
+            checked = isTwoColumnLayout,
+            onCheckedChange = onToggle,
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = customColor,
+                checkedTrackColor = customColor.copy(alpha = 0.5f),
+                uncheckedThumbColor = MaterialTheme.colors.onSurface.copy(alpha = 0.6f),
+                uncheckedTrackColor = MaterialTheme.colors.onSurface.copy(alpha = 0.3f)
+            ),
+            modifier = Modifier
+                .padding(horizontal = 18.dp)
+                .scale(0.8f)
+        )
+        Icon(
+            imageVector = Icons.Filled.ViewModule,
+            contentDescription = "Two column layout",
+            tint = if (isTwoColumnLayout) customColor else MaterialTheme.colors.onSurface.copy(alpha = 0.6f),
+            modifier = Modifier.size(24.dp)
+        )
+    }
+}
+
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun FeaturedCourses(
     courses: List<Course>,
     selectCourse: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var isTwoColumnLayout by remember { mutableStateOf(true) }
+
     Column(
         modifier = modifier
             .verticalScroll(rememberScrollState())
             .statusBarsPadding()
     ) {
-        CoursesAppBar()
-        StaggeredVerticalGrid(
-            maxColumnWidth = 220.dp,
-            modifier = Modifier.padding(4.dp)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp)
         ) {
-            courses.forEach { course ->
-                FeaturedCourse(course, selectCourse)
+
+
+            CoursesAppBar(
+                modifier = Modifier
+                    .align(Alignment.Center)
+            )
+
+            LayoutToggleSwitch(
+                isTwoColumnLayout = isTwoColumnLayout,
+                onToggle = { isTwoColumnLayout = it },
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+                    .padding(start = 16.dp)
+            )
+        }
+        AnimatedContent(
+            targetState = isTwoColumnLayout,
+            transitionSpec = {
+                if (targetState) {
+                    slideInHorizontally { width -> width } + fadeIn() with
+                            slideOutHorizontally { width -> -width } + fadeOut()
+                } else {
+                    slideInHorizontally { width -> -width } + fadeIn() with
+                            slideOutHorizontally { width -> width } + fadeOut()
+                }.using(
+                    SizeTransform(clip = false)
+                )
+            }
+        ) { isTwoColumn ->
+            if (isTwoColumn) {
+                StaggeredVerticalGrid(
+                    maxColumnWidth = 220.dp,
+                    modifier = Modifier.padding(4.dp)
+                ) {
+                    courses.forEach { course ->
+                        FeaturedCourse(course, selectCourse)
+                    }
+                }
+            } else {
+                Column {
+                    courses.forEach { course ->
+                        FeaturedCourse(course, selectCourse, modifier = Modifier.fillMaxWidth())
+                    }
+                }
             }
         }
     }
 }
+
 
 @Composable
 fun FeaturedCourse(
@@ -81,96 +193,85 @@ fun FeaturedCourse(
     selectCourse: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Surface(
-        modifier = modifier.padding(4.dp),
-        color = MaterialTheme.colors.surface,
-        elevation = OwlTheme.elevations.card,
-        shape = MaterialTheme.shapes.medium
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .clickable { selectCourse(course.id) },
+        shape = RoundedCornerShape(16.dp)
     ) {
-        val featuredString = stringResource(id = R.string.featured)
-        ConstraintLayout(
-            modifier = Modifier
-                .clickable(
-                    onClick = { selectCourse(course.id) }
+        Column {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+            ) {
+                NetworkImage(
+                    url = course.thumbUrl,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize()
                 )
-                .semantics {
-                    contentDescription = featuredString
-                }
-        ) {
-            val (image, avatar, subject, name, steps, icon) = createRefs()
-            NetworkImage(
-                url = course.thumbUrl,
-                contentDescription = null,
-                modifier = Modifier
-                    .aspectRatio(4f / 3f)
-                    .constrainAs(image) {
-                        centerHorizontallyTo(parent)
-                        top.linkTo(parent.top)
-                    }
-            )
-            val outlineColor = LocalElevationOverlay.current?.apply(
-                color = MaterialTheme.colors.surface,
-                elevation = OwlTheme.elevations.card
-            ) ?: MaterialTheme.colors.surface
-            OutlinedAvatar(
-                url = course.instructor,
-                outlineColor = outlineColor,
-                modifier = Modifier
-                    .size(38.dp)
-                    .constrainAs(avatar) {
-                        centerHorizontallyTo(parent)
-                        centerAround(image.bottom)
-                    }
-            )
-            Text(
-                text = course.subject.uppercase(Locale.getDefault()),
-                color = MaterialTheme.colors.primary,
-                style = MaterialTheme.typography.overline,
-                modifier = Modifier
-                    .padding(16.dp)
-                    .constrainAs(subject) {
-                        centerHorizontallyTo(parent)
-                        top.linkTo(avatar.bottom)
-                    }
-            )
-            Text(
-                text = course.name,
-                style = MaterialTheme.typography.subtitle1,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .constrainAs(name) {
-                        centerHorizontallyTo(parent)
-                        top.linkTo(subject.bottom)
-                    }
-            )
-            val center = createGuidelineFromStart(0.5f)
-            Icon(
-                imageVector = Icons.Rounded.OndemandVideo,
-                tint = MaterialTheme.colors.primary,
-                contentDescription = null,
-                modifier = Modifier
-                    .size(16.dp)
-                    .constrainAs(icon) {
-                        end.linkTo(center)
-                        centerVerticallyTo(steps)
-                    }
-            )
-            Text(
-                text = course.steps.toString(),
-                color = MaterialTheme.colors.primary,
-                style = MaterialTheme.typography.subtitle2,
-                modifier = Modifier
-                    .padding(
-                        start = 4.dp,
-                        top = 16.dp,
-                        bottom = 16.dp
+                Surface(
+                    color = MaterialTheme.colors.primary.copy(alpha = 0.7f),
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(12.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.featured).uppercase(),
+                        style = MaterialTheme.typography.caption,
+                        color = MaterialTheme.colors.onPrimary,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                     )
-                    .constrainAs(steps) {
-                        start.linkTo(center)
-                        top.linkTo(name.bottom)
-                    }
-            )
+                }
+                OutlinedAvatar(
+                    url = course.instructor,
+                    outlineColor = MaterialTheme.colors.surface,
+                    modifier = Modifier
+                        .size(64.dp)
+                        .align(Alignment.BottomCenter)
+                        .offset(y = 32.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(40.dp))
+
+            Column(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = course.subject.uppercase(Locale.getDefault()),
+                    style = MaterialTheme.typography.overline,
+                    color = MaterialTheme.colors.secondary
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = course.name,
+                    style = MaterialTheme.typography.h6,
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.OndemandVideo,
+                        contentDescription = null,
+                        tint = MaterialTheme.colors.primary,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "${course.steps} lessons",
+                        style = MaterialTheme.typography.body2,
+                        color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }

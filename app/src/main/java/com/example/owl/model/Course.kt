@@ -28,7 +28,8 @@ data class Course(
     val description: String = "",
     val steps: Int,
     val step: Int,
-    val instructor: String = "https://i.pravatar.cc/112?$id"
+    val instructor: String = "https://i.pravatar.cc/112?$id",
+    var isFavorite: Boolean = false
 )
 
 /**

@@ -26,8 +26,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
@@ -35,7 +33,6 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -44,6 +41,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavBackStackEntry
@@ -52,7 +50,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.example.owl.R
 import com.example.owl.model.courses
-import com.example.owl.model.topics
 import com.example.owl.ui.MainActions
 import com.example.owl.ui.MainDestinations
 
@@ -65,18 +62,13 @@ fun NavGraphBuilder.courses(
     val actions = MainActions(navController)
     composable(CourseTabs.FEATURED.route) { from ->
         // Show onboarding instead if not shown yet.
-        LaunchedEffect(onboardingComplete) {
-            if (!onboardingComplete.value) {
-                navController.navigate(MainDestinations.ONBOARDING_ROUTE)
-            }
-        }
-        if (onboardingComplete.value) { // Avoid glitch when showing onboarding
+ // Avoid glitch when showing onboarding
             FeaturedCourses(
                 courses = courses,
                 selectCourse = { id -> onCourseSelected(id, from) },
                 modifier = modifier
             )
-        }
+
     }
     composable(CourseTabs.MY_COURSES.route) { from ->
         MyPersons(
@@ -140,7 +132,7 @@ fun PersonAppBar() {
 
 
 @Composable
-fun CoursesAppBar() {
+fun CoursesAppBar(modifier: Modifier) {
     TopAppBar(
         elevation = 0.dp,
         modifier = Modifier.height(80.dp)
@@ -175,4 +167,10 @@ private object CoursesDestinations {
     const val FEATURED_ROUTE = "courses/featured"
     const val MY_COURSES_ROUTE = "courses/my"
     const val SEARCH_COURSES_ROUTE = "courses/search"
+}
+
+@Composable
+@Preview
+fun PersonAppBarPreview() {
+    PersonAppBar()
 }
