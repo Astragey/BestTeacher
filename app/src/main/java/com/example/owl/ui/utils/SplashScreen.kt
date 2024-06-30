@@ -32,13 +32,13 @@ fun SplashScreen(navController: NavController) {
         startAnimation = true
         alpha.animateTo(
             targetValue = 1f,
-            animationSpec = tween(durationMillis = 1000)
+            animationSpec = tween(durationMillis = 700)
         )
         scale.animateTo(
             targetValue = 1f,
-            animationSpec = tween(durationMillis = 1000, delayMillis = 500)
+            animationSpec = tween(durationMillis = 700, delayMillis = 500)
         )
-        delay(1000)
+        delay(700)
         navController.navigate("courses") {
             popUpTo("splash") { inclusive = true }
         }

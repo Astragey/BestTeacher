@@ -19,22 +19,36 @@ package com.example.owl.ui.courses
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -52,6 +66,9 @@ import com.example.owl.R
 import com.example.owl.model.courses
 import com.example.owl.ui.MainActions
 import com.example.owl.ui.MainDestinations
+import com.example.owl.ui.theme.blue200
+import com.example.owl.ui.theme.blue700
+import com.example.owl.ui.theme.blue800
 
 fun NavGraphBuilder.courses(
     onCourseSelected: (Long, NavBackStackEntry) -> Unit,
@@ -86,48 +103,81 @@ fun NavGraphBuilder.courses(
 
 @Composable
 fun PersonAppBar() {
-    TopAppBar(
-        elevation = 0.dp,
-        modifier = Modifier.height(80.dp)
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(200.dp)
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        blue800,
+                        MaterialTheme.colorScheme.primaryContainer
+                    )
+                )
+            )
     ) {
-        Image(
+        Column(
             modifier = Modifier
-                .padding(16.dp)
-                .align(Alignment.CenterVertically),
-            painter = painterResource(id = R.drawable.logo_title),
-            contentDescription = null
-        )
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.logo_title),
+                    contentDescription = "Logo",
+                    modifier = Modifier.height(40.dp)
+                )
+                IconButton(
+                    onClick = { /* TODO: Add action */ }
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Settings,
+                        contentDescription = "Settings",
+                        tint = Color.White
+                    )
+                }
+            }
 
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Card(
+                    shape = CircleShape,
+                    modifier = Modifier.size(80.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                ) {
+                    Image(
+                        imageVector = Icons.Filled.AccountCircle,
+                        contentDescription = stringResource(R.string.label_profile),
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+                Spacer(modifier = Modifier.width(16.dp))
+                Column {
+                    Text(
+                        text = "User Name",
+                        style = MaterialTheme.typography.headlineSmall.copy(
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                    Text(
+                        text = "user@email.com",
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            color = Color.Black.copy(alpha = 0.7f)
+                        )
+                    )
+                }
+            }
+        }
     }
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ){
-        Image(
-            imageVector = Icons.Filled.AccountCircle,
-            contentDescription = stringResource(R.string.label_profile),
-            contentScale = ContentScale.FillWidth,
-            modifier = Modifier.width(100.dp)
-        )
-    }
-
-
-
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ){
-        Text(text = "User",
-            style = TextStyle(
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-            ),
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(horizontal = 16.dp)
-        )
-    }
-    Spacer(modifier = Modifier.size(30 .dp))
-
 }
 
 

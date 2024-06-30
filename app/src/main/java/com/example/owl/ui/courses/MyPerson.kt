@@ -17,6 +17,8 @@
 package com.example.owl.ui.courses
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -52,34 +54,60 @@ import com.example.owl.model.Course
 import com.example.owl.ui.common.CourseListItem
 import com.example.owl.ui.theme.BlueTheme
 import com.example.owl.ui.common.PersonListItem
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.rounded.ArrowForward
+import androidx.compose.material3.*
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
+import com.example.owl.ui.theme.blue200
+import com.example.owl.ui.theme.blue700
 
-
-
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PersonAppBarnew() {
+    TopAppBar(
+        title = { Text("Persons") },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+        )
+    )
+}
 
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 fun MyPersons(
     persons: List<Person>,
     selectPerson: (Long) -> Unit,
     modifier: Modifier = Modifier,
     navController: NavHostController
 ) {
-    LazyColumn(modifier) {
-        item {
-            Spacer(Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
-        }
-        item {
-            PersonAppBar()
-        }
-        itemsIndexed(
-            items = persons,
-            key = { _, person -> person.id }
-        ) { index, person ->
-            Myperson(
-                person = person,
-                index = index,
-                selectPerson = selectPerson,
-                navController = navController
-            )
+    Scaffold(
+        topBar = { PersonAppBar() },
+        modifier = modifier.fillMaxSize()
+    ) { innerPadding ->
+        LazyColumn(
+            contentPadding = innerPadding,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            itemsIndexed(
+                items = persons,
+                key = { _, person -> person.id }
+            ) { index, person ->
+                Myperson(
+                    person = person,
+                    index = index,
+                    selectPerson = selectPerson,
+                    navController = navController
+                )
+            }
         }
     }
 }
@@ -92,38 +120,100 @@ fun Myperson(
     selectPerson: (Long) -> Unit,
     navController: NavHostController
 ) {
-    Row(modifier = Modifier.padding(bottom = 8.dp)) {
-        val stagger = if (index % 2 == 0) 72.dp else 16.dp
+    val stagger = if (index % 2 == 0) 32.dp else 16.dp
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+    ) {
         Spacer(modifier = Modifier.width(stagger))
-        Box(){
-
-        }
-        Spacer(modifier = Modifier.width(stagger))
-        Box(){
-
-            PersonListItem(
-                person = person,
-                onClick = { },
-                shape = RoundedCornerShape(topStart = 24.dp),
-                modifier = Modifier.height(96.dp)
-                    .width(500.dp)
-            )
-
-            Button(
-                onClick = { navController.navigate("courses/search") },
-                modifier = Modifier
-                    .padding(end = 20.dp, bottom = 10.dp) // 调整右侧和底部的填充以将按钮左移
-                    .width(90.dp)
-                    .align(Alignment.BottomEnd)
-            ) {
-                Text(
-                    text = "Try it!",
-                    fontSize = 14.sp, // 将字体大小增加以使其更大
-                    modifier = Modifier.fillMaxWidth() // 使文本占据整个按钮的宽度
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(160.dp)
+                .border(
+                    width = 7.dp,
+                    color = MaterialTheme.colorScheme.outlineVariant,
+                    shape = RoundedCornerShape(20.dp)
                 )
+                .background(
+                    color = Color.Yellow, // 使用你想要的颜色
+                    shape = RoundedCornerShape(20.dp)
+                )
+        ) {
+            ElevatedCard(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(7.dp), // 确保卡片和边框之间有间距
+                elevation = CardDefaults.elevatedCardElevation(
+                    defaultElevation = 8.dp,
+                    pressedElevation = 12.dp,
+                    focusedElevation = 10.dp,
+                    hoveredElevation = 10.dp
+                ),
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(20.dp)
+                ) {
+                    Row {
+                        Column(
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text(
+                                text = person.name,
+                                style = MaterialTheme.typography.headlineMedium,
+                                color = blue700,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = person.name,
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                    FilledTonalButton(
+                        onClick = { navController.navigate("courses/search") },
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd),
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = blue700,
+                            contentColor = Color.White
+                        ),
+                        shape = RoundedCornerShape(20.dp)
+                    ) {
+                        Text(
+                            text = "Try it!",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        Spacer(Modifier.width(4.dp))
+                        Icon(
+                            imageVector = Icons.Rounded.ArrowForward,
+                            contentDescription = "Go",
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
+                }
             }
         }
-
     }
+
 }
 
+@Preview(showBackground = true)
+@Composable
+fun MyPersonsPreview() {
+    MaterialTheme {
+        val navController = rememberNavController()
+        MyPersons(
+            persons = persons,
+            selectPerson = { /* 预览中不需要实际功能 */ },
+            navController = navController
+        )
+    }
+}
