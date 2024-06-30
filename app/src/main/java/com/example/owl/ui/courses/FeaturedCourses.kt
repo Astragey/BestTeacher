@@ -76,9 +76,13 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.with
+import androidx.compose.foundation.border
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CardDefaults
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import coil.compose.AsyncImage
 import com.example.owl.ui.theme.blue700
 
 @Composable
@@ -190,6 +194,30 @@ fun FeaturedCourses(
     }
 }
 
+@Composable
+fun OutlinedAvatarmy(
+    url: String,
+    modifier: Modifier = Modifier,
+    outlineSize: Dp = 3.dp,
+    outlineColor: Color = Color.White
+) {
+    Box(modifier = modifier) {
+        AsyncImage(
+            model = url,
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxSize()
+                .border(
+                    width = outlineSize,
+                    color = outlineColor,
+                    shape = CircleShape
+                )
+                .padding(outlineSize)
+                .clip(CircleShape)
+        )
+    }
+}
 
 @Composable
 fun FeaturedCourse(
@@ -235,7 +263,7 @@ fun FeaturedCourse(
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                     )
                 }
-                OutlinedAvatar(
+                OutlinedAvatarmy(
                     url = course.instructor,
                     outlineColor = MaterialTheme.colors.surface,
                     modifier = Modifier
