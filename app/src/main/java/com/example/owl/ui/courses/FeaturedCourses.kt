@@ -76,6 +76,9 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.with
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import com.example.owl.ui.theme.blue700
 
 @Composable
 fun LayoutToggleSwitch(
@@ -193,6 +196,9 @@ fun FeaturedCourse(
     selectCourse: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val customFont = FontFamily(
+        Font(R.font.ming)
+    )
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -243,13 +249,16 @@ fun FeaturedCourse(
             ) {
                 Text(
                     text = course.subject.uppercase(Locale.getDefault()),
-                    style = MaterialTheme.typography.overline,
-                    color = MaterialTheme.colors.secondary
+                    style = MaterialTheme.typography.h6,
+                    fontFamily = customFont,
+                    color = blue700
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = course.name,
-                    style = MaterialTheme.typography.h6,
+                    style = MaterialTheme.typography.h4,
+                    fontFamily = customFont,
+                    color = Color.Black,
                     textAlign = TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(16.dp))

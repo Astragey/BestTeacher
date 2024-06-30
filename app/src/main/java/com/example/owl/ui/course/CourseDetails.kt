@@ -110,6 +110,17 @@ import okhttp3.Response
 import okhttp3.Callback
 import java.io.IOException
 
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.material.Typography
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Typeface
+import androidx.compose.ui.unit.sp
+import okhttp3.Call
+
+
 private val FabSize = 56.dp
 private const val ExpandedSheetAlpha = 0.96f
 
@@ -131,12 +142,12 @@ fun performLongRunningTask(poemId: Long): String {
 
     // 使用 OkHttpClient 发起异步请求
     client.newCall(request).enqueue(object : Callback {
-        override fun onFailure(call: okhttp3.Call, e: IOException) {
+        override fun onFailure(call: Call, e: IOException) {
             // 处理请求失败
             e.printStackTrace()
         }
 
-        override fun onResponse(call: okhttp3.Call, response: Response) {
+        override fun onResponse(call: Call, response: Response) {
             // 处理响应
             response.use {
                 if (!it.isSuccessful) throw IOException("Unexpected code $response")
@@ -359,7 +370,9 @@ private fun CourseDescriptionHeader(
 private fun CourseDescriptionBody(course: Course, poem: String) {
 
     val parts = poem.split(";")
-
+    val customFont = FontFamily(
+        Font(R.font.ming)
+    )
     var title = ""
     var dynasty = ""
     var content = ""
@@ -398,10 +411,24 @@ private fun CourseDescriptionBody(course: Course, poem: String) {
 //                bottom = 16.dp
 //            )
 //    )
+
     Text(
-        text = "\n\n $title",
+        text = title,
         style = MaterialTheme.typography.h4,
         textAlign = TextAlign.Center,
+        fontFamily = customFont,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .padding(
+                top = 36.dp
+            )
+    )
+    Text(
+        text = "Thoughts During the Silent Night",
+        style = MaterialTheme.typography.h4,
+        textAlign = TextAlign.Center,
+        fontFamily = customFont,
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
@@ -409,31 +436,24 @@ private fun CourseDescriptionBody(course: Course, poem: String) {
     Text(
         text = "$dynasty · $userName \n",
         color = MaterialTheme.colors.primary,
-        style = MaterialTheme.typography.body2,
         textAlign = TextAlign.Center,
+        fontFamily = customFont,
         modifier = Modifier
             .fillMaxWidth()
             .padding(
                 start = 16.dp,
                 top = 36.dp,
-                end = 16.dp,
-                bottom = 16.dp
+                end = 16.dp
             )
     )
-    Text(
-        text = title,
-        style = MaterialTheme.typography.h4,
-        textAlign = TextAlign.Center,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-    )
+
     Spacer(modifier = Modifier.height(16.dp))
     CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
         Text(
             text = content,
-            style = MaterialTheme.typography.body1,
+            style = MaterialTheme.typography.h5,
             textAlign = TextAlign.Center,
+            fontFamily = customFont,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
@@ -465,7 +485,6 @@ private fun CourseDescriptionBody(course: Course, poem: String) {
 //    }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun RelatedCourses(
     courseId: Long,
@@ -537,101 +556,9 @@ private fun LessonsSheet(
         endFraction = 0.3f,
         fraction = openFraction
     )
-    Surface(
-        color = surfaceColor,
-        contentColor = contentColorFor(backgroundColor = MaterialTheme.colors.primarySurface),
-        shape = RoundedCornerShape(topStart = tlCorner),
-        modifier = Modifier.graphicsLayer {
-            translationX = offsetX
-            translationY = offsetY
-        }
-    ) {
-        Lessons(course, openFraction, surfaceColor, updateSheet)
-    }
+
 }
 
-@Composable
-private fun Lessons(
-    course: Course,
-    openFraction: Float,
-    surfaceColor: Color = MaterialTheme.colors.surface,
-    updateSheet: (SheetState) -> Unit
-) {
-    val lessons: List<Lesson> = remember(course.id) { LessonsRepo.getLessons(course.id) }
-
-    Box(modifier = Modifier.fillMaxWidth()) {
-        // When sheet open, show a list of the lessons
-        val lessonsAlpha = lerp(0f, 1f, 0.2f, 0.8f, openFraction)
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .graphicsLayer { alpha = lessonsAlpha }
-                .statusBarsPadding()
-        ) {
-            val scroll = rememberLazyListState()
-            val appBarElevation by animateDpAsState(if (scroll.isScrolled) 4.dp else 0.dp)
-            val appBarColor = if (appBarElevation > 0.dp) surfaceColor else Color.Transparent
-            TopAppBar(
-                backgroundColor = appBarColor,
-                elevation = appBarElevation
-            ) {
-                Text(
-                    text = course.name,
-                    style = MaterialTheme.typography.subtitle1,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .weight(1f)
-                        .align(Alignment.CenterVertically)
-                )
-                IconButton(
-                    onClick = { updateSheet(SheetState.Closed) },
-                    modifier = Modifier.align(Alignment.CenterVertically)
-                ) {
-                    Icon(
-                        imageVector = Icons.Rounded.ExpandMore,
-                        contentDescription = stringResource(R.string.label_collapse_lessons)
-                    )
-                }
-            }
-            LazyColumn(
-                state = scroll,
-                contentPadding = WindowInsets.systemBars
-                    .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
-                    .asPaddingValues()
-            ) {
-                items(
-                    items = lessons,
-                    key = { it.title }
-                ) { lesson ->
-                    Lesson(lesson)
-                    Divider(startIndent = 128.dp)
-                }
-            }
-        }
-
-        // When sheet closed, show the FAB
-        val fabAlpha = lerp(1f, 0f, 0f, 0.15f, openFraction)
-        Box(
-            modifier = Modifier
-                .size(FabSize)
-                .padding(start = 16.dp, top = 8.dp) // visually center contents
-                .graphicsLayer { alpha = fabAlpha }
-        ) {
-            IconButton(
-                modifier = Modifier.align(Alignment.Center),
-                onClick = { updateSheet(SheetState.Open) }
-            ) {
-                Icon(
-                    imageVector = Icons.Rounded.PlaylistPlay,
-                    tint = MaterialTheme.colors.onPrimary,
-                    contentDescription = stringResource(R.string.label_expand_lessons)
-                )
-            }
-        }
-    }
-}
 
 @Composable
 private fun Lesson(lesson: Lesson) {
@@ -698,41 +625,7 @@ private fun CourseDetailsPreview() {
     )
 }
 
-@Preview(name = "Lessons Sheet — Closed")
-@Composable
-private fun LessonsSheetClosedPreview() {
-    LessonsSheetPreview(0f)
-}
 
-@Preview(name = "Lessons Sheet — Open")
-@Composable
-private fun LessonsSheetOpenPreview() {
-    LessonsSheetPreview(1f)
-}
-
-@Preview(name = "Lessons Sheet — Open – Dark")
-@Composable
-private fun LessonsSheetOpenDarkPreview() {
-    LessonsSheetPreview(1f, true)
-}
-
-@Composable
-private fun LessonsSheetPreview(
-    openFraction: Float,
-    darkTheme: Boolean = false
-) {
-    PinkTheme(darkTheme) {
-        val color = MaterialTheme.colors.primarySurface
-        Surface(color = color) {
-            Lessons(
-                course = courses.first(),
-                openFraction = openFraction,
-                surfaceColor = color,
-                updateSheet = { }
-            )
-        }
-    }
-}
 
 @Preview(name = "Related")
 @Composable
