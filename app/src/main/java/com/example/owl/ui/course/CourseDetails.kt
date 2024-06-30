@@ -123,7 +123,7 @@ fun performLongRunningTask(poemId: Long): String {
     //创建一个Request对象,url为请求的链接，下面不做解释，括号中的url根据实际填入http连接
     //例如，val url = "https://www.baidu.com/"，以下同理，url为String
     // 类型
-    val url = "http://123.60.217.228:7000/api/poem/$poemId"
+    val url = "http://120.46.68.62:7000/api/poem/$poemId"
     val request = Request.Builder()
         .url(url)
         .build()
@@ -313,9 +313,10 @@ private fun CourseDescriptionHeader(
         println("Input string does not contain enough parts")
     }
 
+
     Box {
         NetworkImage(
-            url = "http://123.60.217.228:8000/image?name=$dynasty",
+            url = "http://120.46.68.62:8000/image?name=$dynasty",
             contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth()
@@ -334,23 +335,23 @@ private fun CourseDescriptionHeader(
                     contentDescription = stringResource(R.string.label_back)
                 )
             }
-            Image(
-                painter = painterResource(id = R.drawable.logo_title),
-                contentDescription = null,
-                modifier = Modifier
-                    .padding(bottom = 4.dp)
-                    .size(24.dp)
-                    .align(Alignment.CenterVertically)
-            )
+//            Image(
+//                painter = painterResource(id = R.drawable.logo_title),
+//                contentDescription = null,
+//                modifier = Modifier
+//                    .padding(bottom = 4.dp)
+//                    .size(24.dp)
+//                    .align(Alignment.CenterVertically)
+//            )
             Spacer(modifier = Modifier.weight(1f))
         }
-        OutlinedAvatar(
-            url = course.instructor,
-            modifier = Modifier
-                .size(40.dp)
-                .align(Alignment.BottomCenter)
-                .offset(y = 20.dp) // overlap bottom of image
-        )
+//        OutlinedAvatar(
+//            url = course.instructor,
+//            modifier = Modifier
+//                .size(40.dp)
+//                .align(Alignment.BottomCenter)
+//                .offset(y = 20.dp) // overlap bottom of image
+//        )
     }
 }
 
@@ -378,8 +379,35 @@ private fun CourseDescriptionBody(course: Course, poem: String) {
         println("Input string does not contain enough parts")
     }
 
+    title = "静夜思"
+    dynasty = "唐"
+    content = "床前明月光，疑是地上霜。\n举头望明月，低头思故乡。\n"
+    userName = "李白"
+
+//    Text(
+//        text = "$userName $dynasty",
+//        color = MaterialTheme.colors.primary,
+//        style = MaterialTheme.typography.body2,
+//        textAlign = TextAlign.Center,
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(
+//                start = 16.dp,
+//                top = 36.dp,
+//                end = 16.dp,
+//                bottom = 16.dp
+//            )
+//    )
     Text(
-        text = "$userName $dynasty",
+        text = "\n\n $title",
+        style = MaterialTheme.typography.h4,
+        textAlign = TextAlign.Center,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+    )
+    Text(
+        text = "$dynasty · $userName \n",
         color = MaterialTheme.colors.primary,
         style = MaterialTheme.typography.body2,
         textAlign = TextAlign.Center,
@@ -412,29 +440,29 @@ private fun CourseDescriptionBody(course: Course, poem: String) {
         )
     }
     Divider(modifier = Modifier.padding(16.dp))
-    Text(
-        text = "",
-        style = MaterialTheme.typography.h6,
-        textAlign = TextAlign.Center,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    )
-    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-        Text(
-            text = "",
-            style = MaterialTheme.typography.body1,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    start = 16.dp,
-                    top = 16.dp,
-                    end = 16.dp,
-                    bottom = 32.dp
-                )
-        )
-    }
+//    Text(
+//        text = stringResource(id = R.string.what_you_ll_need),
+//        style = MaterialTheme.typography.h6,
+//        textAlign = TextAlign.Center,
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(16.dp)
+//    )
+//    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+//        Text(
+//            text = stringResource(id = R.string.needs),
+//            style = MaterialTheme.typography.body1,
+//            textAlign = TextAlign.Center,
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(
+//                    start = 16.dp,
+//                    top = 16.dp,
+//                    end = 16.dp,
+//                    bottom = 32.dp
+//                )
+//        )
+//    }
 }
 
 @OptIn(ExperimentalFoundationApi::class)

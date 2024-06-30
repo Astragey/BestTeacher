@@ -56,8 +56,7 @@ fun NetworkImage(
 
 
     val imageUrls = listOf(
-        "http://123.60.217.228:8000/image?name=tang",
-        "https://images.unsplash.com/photo-1508261301902-79a2d8e78f71",
+        "https://i.ibb.co/1QmgXPr/K2-A000979-N000000000-PAD.jpg",
     )
     val pagerState = rememberPagerState(pageCount = { imageUrls.size })
     val placeholder = painterResource(R.drawable.photo_architecture)
