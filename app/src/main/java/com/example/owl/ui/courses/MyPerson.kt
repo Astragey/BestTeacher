@@ -158,7 +158,10 @@ fun Myperson(
                         .fillMaxSize()
                         .padding(20.dp)
                 ) {
-                    Row {
+                    Row( modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 50.dp)
+                    ) {
                         Column(
                             modifier = Modifier.weight(1f)
                         ) {
@@ -170,9 +173,11 @@ fun Myperson(
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
-                                text = person.name,
+                                text = person.description,
                                 style = MaterialTheme.typography.bodyLarge,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier
+                                    .padding(end = 60.dp)
                             )
                         }
                     }

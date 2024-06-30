@@ -19,6 +19,7 @@ val persons = listOf(
         id = 0,
         name = "Poem Generation",
         subject = "Arts & Crafts",
+        description = "Generate poems based on keywords",
         thumbUrl = "https://images.unsplash.com/photo-1516562309708-05f3b2b2c238",
         thumbContentDesc = ""
     ),
@@ -26,6 +27,7 @@ val persons = listOf(
         id = 1,
         name = "Poem to Painting",
         subject = "Painting",
+        description = "Generate the painting based on the poem",
         thumbUrl = "https://images.unsplash.com/photo-1508261301902-79a2d8e78f71",
         thumbContentDesc = ""
     ),
@@ -33,15 +35,10 @@ val persons = listOf(
         id = 2,
         name = "Poem Postcards",
         subject = "Design",
+        description = "Make a poetry postcard and save it!",
         thumbUrl = "https://images.unsplash.com/photo-1517602302552-471fe67acf66",
         thumbContentDesc = ""
     ),
-    Person(
-        id = 3,
-        name = "My Favorite Poem",
-        subject = "Arts & Crafts",
-        thumbUrl = "https://images.unsplash.com/photo-1547609434-b732edfee020",
-        thumbContentDesc = ""
-    ),
+
 
 )

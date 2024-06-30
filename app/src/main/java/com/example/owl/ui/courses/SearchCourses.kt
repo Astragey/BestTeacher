@@ -91,11 +91,16 @@ import android.content.Context
 import android.widget.Toast
 import androidx.compose.ui.platform.LocalContext
 import android.content.ClipData
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
@@ -142,6 +147,9 @@ fun SearchCourses(
     modifier: Modifier = Modifier,
     navController: NavHostController
 ) {
+    val customFont = FontFamily(
+        Font(R.font.ming)
+    )
     var temp = ""
     val (searchTerm, updateSearchTerm) = remember { mutableStateOf(TextFieldValue("")) }
     val context = LocalContext.current
@@ -152,15 +160,29 @@ fun SearchCourses(
             .fillMaxHeight()
     ) {
 
-        item { AppBar(searchTerm, updateSearchTerm) }
+        item {  }
 
         item {
-            IconButton(onClick = {
-                navController.navigate("courses/my")
-            }) {
-                Icon(
-                    imageVector = Icons.Rounded.ArrowBack,
-                    contentDescription = stringResource(R.string.label_back)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(
+                    onClick = {
+                        navController.navigate("courses/my")
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.ArrowBack,
+                        contentDescription = stringResource(R.string.label_back)
+                    )
+                }
+
+                AppBar(
+                    searchTerm = searchTerm,
+                    updateSearchTerm = updateSearchTerm
                 )
             }
         }
@@ -177,35 +199,45 @@ fun SearchCourses(
 
                 TextField(
                     value = textState.value,
-                    onValueChange = {
-                        // 在输入文本时更新文本状态
-                        textState.value = it
-                    },
+                    onValueChange = { textState.value = it },
                     modifier = Modifier
-                        .fillMaxWidth() // 填充最大宽度
-                        .padding(16.dp) // 添加内边距
-                        .heightIn(min = 56.dp), // 设置最小高度，确保文本框有一定的高度
-                    textStyle = TextStyle(color = Color.White), // 将文本颜色设置为白色
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .heightIn(min = 56.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .border(1.dp, Color.Gray.copy(alpha = 0.5f), RoundedCornerShape(16.dp)),
+                    textStyle = TextStyle(
+                        color = Color.White,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Normal
+                    ),
+                    placeholder = {
+                        Text(
+                            "输入您的诗歌关键词...",
+                            color = Color.Gray.copy(alpha = 0.7f)
+                        )
+                    },
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color(0xFF2C2C2C),
+                        cursorColor = Color.White,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent
+                    ),
                     keyboardOptions = KeyboardOptions.Default.copy(
-                        // 定义按下回车时的行为
                         imeAction = ImeAction.Done
                     ),
-
                     keyboardActions = KeyboardActions(
                         onDone = {
-                            // 在按下回车时清空文本框内容
                             println(textState.value.text)
                             runBlocking {
                                 temp = performLongRunningTask(textState.value.text)
                                 println("Server Response: $temp")
                             }
-
                             textState.value = TextFieldValue()
-
                             showSecondBox.value = true
-
                         }
-                    )
+                    ),
+                    singleLine = true
                 )
 
 
@@ -262,6 +294,8 @@ fun SearchCourses(
                                     .heightIn(min = 56.dp), // 设置最小高度，确保文本框有一定的高度
                                 // 样式、颜色等其他属性
                                 textAlign = TextAlign.Center,
+
+                                fontFamily = customFont,
                                 color = Color.Black // 例如，设置文本颜色为白色
                             )
                             // 添加复制图标

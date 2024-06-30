@@ -87,34 +87,7 @@ fun CourseListItem(
                         .weight(1f)
                         .padding(bottom = 4.dp)
                 )
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Rounded.OndemandVideo,
-                        tint = MaterialTheme.colors.primary,
-                        contentDescription = null,
-                        modifier = Modifier.size(iconSize)
-                    )
-                    Text(
-                        text = stringResource(
-                            R.string.course_step_steps,
-                            course.step,
-                            course.steps
-                        ),
-                        color = MaterialTheme.colors.primary,
-                        style = MaterialTheme.typography.caption,
-                        modifier = Modifier
-                            .padding(start = 8.dp)
-                            .weight(1f)
-                            .wrapContentWidth(Alignment.Start)
-                    )
-                    NetworkImage(
-                        url = course.instructor,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(28.dp)
-                            .clip(CircleShape)
-                    )
-                }
+
             }
         }
 
