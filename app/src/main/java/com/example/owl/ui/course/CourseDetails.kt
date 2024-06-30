@@ -21,6 +21,8 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation.Vertical
 import androidx.compose.foundation.layout.Box
@@ -114,10 +116,20 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.material.Typography
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Typeface
 import androidx.compose.ui.unit.sp
+import com.example.owl.ui.theme.blue200
 import okhttp3.Call
 
 
@@ -221,7 +233,6 @@ fun CourseDetails(
     // TODO: Show error if course not found.
     CourseDetails(course, poem, selectCourse, upPress)
 }
-
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CourseDetails(
@@ -230,7 +241,6 @@ fun CourseDetails(
     selectCourse: (Long) -> Unit,
     upPress: () -> Unit
 ) {
-    println("Poem is $poem")
     PinkTheme {
         BoxWithConstraints {
             val sheetState = rememberSwipeableState(SheetState.Closed)
@@ -248,17 +258,22 @@ fun CourseDetails(
             )
 
             Box(
-                // The Lessons sheet is initially closed and appears as a FAB. Make it openable by
-                // swiping or clicking the FAB.
-                Modifier.swipeable(
-                    state = sheetState,
-                    anchors = mapOf(
-                        0f to SheetState.Closed,
-                        -dragRange to SheetState.Open
-                    ),
-                    thresholds = { _, _ -> FractionalThreshold(0.5f) },
-                    orientation = Vertical
-                )
+                Modifier
+                    .fillMaxSize()
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(Color(0xFFFAF0E6), Color(0xFFF0F8FF))
+                        )
+                    )
+                    .swipeable(
+                        state = sheetState,
+                        anchors = mapOf(
+                            0f to SheetState.Closed,
+                            -dragRange to SheetState.Open
+                        ),
+                        thresholds = { _, _ -> FractionalThreshold(0.5f) },
+                        orientation = Vertical
+                    )
             ) {
                 val openFraction = if (sheetState.offset.value.isNaN()) {
                     0f
@@ -288,12 +303,10 @@ private fun CourseDescription(
     selectCourse: (Long) -> Unit,
     upPress: () -> Unit
 ) {
-    Surface(modifier = Modifier.fillMaxSize()) {
-        LazyColumn {
-            item { CourseDescriptionHeader(course, poem, upPress) }
-            item { CourseDescriptionBody(course, poem) }
-            item { RelatedCourses(course.id, selectCourse) }
-        }
+    LazyColumn {
+        item { CourseDescriptionHeader(course, poem, upPress) }
+        item { CourseDescriptionBody(course, poem) }
+        item { RelatedCourses(course.id, selectCourse) }
     }
 }
 
@@ -304,26 +317,17 @@ private fun CourseDescriptionHeader(
     upPress: () -> Unit
 ) {
     val parts = poem.split(";")
-
     var title = ""
     var dynasty = ""
     var content = ""
     var userName = ""
 
-    if (parts.size >= 4) {
+    if (parts.size >= 6) {
         title = parts[4]
         dynasty = parts[3]
         content = parts[5]
         userName = parts[2]
-
-        println("Part 1: $title")
-        println("Part 2: $dynasty")
-        println("Part 3: $content")
-        println("Part 4: $userName")
-    } else {
-        println("Input string does not contain enough parts")
     }
-
 
     Box {
         NetworkImage(
@@ -331,13 +335,14 @@ private fun CourseDescriptionHeader(
             contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth()
+                .height(300.dp)
+                .clip(RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp))
                 .scrim(colors = listOf(Color(0x80000000), Color(0x33000000)))
-                .aspectRatio(4f / 3f)
         )
         TopAppBar(
             backgroundColor = Color.Transparent,
             elevation = 0.dp,
-            contentColor = Color.White, // always white as image has dark scrim
+            contentColor = Color.White,
             modifier = Modifier.statusBarsPadding()
         ) {
             IconButton(onClick = upPress) {
@@ -346,143 +351,119 @@ private fun CourseDescriptionHeader(
                     contentDescription = stringResource(R.string.label_back)
                 )
             }
-//            Image(
-//                painter = painterResource(id = R.drawable.logo_title),
-//                contentDescription = null,
-//                modifier = Modifier
-//                    .padding(bottom = 4.dp)
-//                    .size(24.dp)
-//                    .align(Alignment.CenterVertically)
-//            )
             Spacer(modifier = Modifier.weight(1f))
         }
-//        OutlinedAvatar(
-//            url = course.instructor,
-//            modifier = Modifier
-//                .size(40.dp)
-//                .align(Alignment.BottomCenter)
-//                .offset(y = 20.dp) // overlap bottom of image
-//        )
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CourseDescriptionBody(course: Course, poem: String) {
-
     val parts = poem.split(";")
-    val customFont = FontFamily(
-        Font(R.font.ming)
-    )
     var title = ""
     var dynasty = ""
     var content = ""
     var userName = ""
 
-    if (parts.size >= 4) {
+    if (parts.size >= 6) {
         title = parts[4]
         dynasty = parts[3]
         content = parts[5]
         userName = parts[2]
-
-        println("HEREPart 1: $title")
-        println("Part 2: $dynasty")
-        println("Part 3: $content")
-        println("Part 4: $userName")
     } else {
-        println("Input string does not contain enough parts")
+        title = "静夜思"
+        dynasty = "唐"
+        content = "床前明月光，疑是地上霜。\n举头望明月，低头思故乡。\n"
+        userName = "李白"
     }
 
-    title = "静夜思"
-    dynasty = "唐"
-    content = "床前明月光，疑是地上霜。\n举头望明月，低头思故乡。\n"
-    userName = "李白"
-
-//    Text(
-//        text = "$userName $dynasty",
-//        color = MaterialTheme.colors.primary,
-//        style = MaterialTheme.typography.body2,
-//        textAlign = TextAlign.Center,
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(
-//                start = 16.dp,
-//                top = 36.dp,
-//                end = 16.dp,
-//                bottom = 16.dp
-//            )
-//    )
-
-    Text(
-        text = title,
-        style = MaterialTheme.typography.h4,
-        textAlign = TextAlign.Center,
-        fontFamily = customFont,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-            .padding(
-                top = 36.dp
-            )
-    )
-    Text(
-        text = "Thoughts During the Silent Night",
-        style = MaterialTheme.typography.h4,
-        textAlign = TextAlign.Center,
-        fontFamily = customFont,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-    )
-    Text(
-        text = "$dynasty · $userName \n",
-        color = MaterialTheme.colors.primary,
-        textAlign = TextAlign.Center,
-        fontFamily = customFont,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                start = 16.dp,
-                top = 36.dp,
-                end = 16.dp
-            )
+    val customFont = FontFamily(
+        Font(R.font.ming)
     )
 
-    Spacer(modifier = Modifier.height(16.dp))
-    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-        Text(
-            text = content,
-            style = MaterialTheme.typography.h5,
-            textAlign = TextAlign.Center,
-            fontFamily = customFont,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
+    Card(
+        shape = RoundedCornerShape(16.dp),
+        modifier = Modifier
+            .fillMaxWidth().padding(16.dp)
+            ,
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 14.dp
         )
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.h4,
+                textAlign = TextAlign.Center,
+                fontFamily = customFont,
+                color=Color.Black,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp)
+            )
+            Text(
+                text = "Thoughts During the Silent Night",
+                style = MaterialTheme.typography.h5,
+                textAlign = TextAlign.Center,
+                fontFamily = customFont,
+                color=Color.Black,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp)
+            )
+            Text(
+                text = "$dynasty · $userName",
+                color = MaterialTheme.colors.primary,
+                textAlign = TextAlign.Center,
+                fontFamily = customFont,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp, bottom = 16.dp)
+            )
+            Divider(modifier = Modifier.padding(vertical = 16.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .drawBehind {
+                        // 外边框
+                        drawRect(
+                            color = Color(0xFFD3D3D3),
+                            size = size,
+                            style = Stroke(width = 2f)
+                        )
+                        // 内边框
+                        drawRect(
+                            color = Color(0xFFD3D3D3),
+                            topLeft = Offset(8f, 8f),
+                            size = Size(size.width - 16f, size.height - 16f),
+                            style = Stroke(width = 1f)
+                        )
+                        // 角落装饰
+                        val cornerSize = 16f
+                        // 左上角
+                        drawLine(Color(0xFFD3D3D3), Offset(0f, cornerSize), Offset(cornerSize, 0f), 2f)
+                        // 右上角
+                        drawLine(Color(0xFFD3D3D3), Offset(size.width - cornerSize, 0f), Offset(size.width, cornerSize), 2f)
+                        // 左下角
+                        drawLine(Color(0xFFD3D3D3), Offset(0f, size.height - cornerSize), Offset(cornerSize, size.height), 2f)
+                        // 右下角
+                        drawLine(Color(0xFFD3D3D3), Offset(size.width - cornerSize, size.height), Offset(size.width, size.height - cornerSize), 2f)
+                    }
+            ) {
+                Text(
+                    text = content,
+                    style = MaterialTheme.typography.h5,
+                    textAlign = TextAlign.Center,
+                    fontFamily = customFont,
+                    color = Color.Black,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(24.dp)
+                )
+            }
+        }
     }
-    Divider(modifier = Modifier.padding(16.dp))
-//    Text(
-//        text = stringResource(id = R.string.what_you_ll_need),
-//        style = MaterialTheme.typography.h6,
-//        textAlign = TextAlign.Center,
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(16.dp)
-//    )
-//    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-//        Text(
-//            text = stringResource(id = R.string.needs),
-//            style = MaterialTheme.typography.body1,
-//            textAlign = TextAlign.Center,
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(
-//                    start = 16.dp,
-//                    top = 16.dp,
-//                    end = 16.dp,
-//                    bottom = 32.dp
-//                )
-//        )
-//    }
 }
 
 @Composable

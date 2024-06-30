@@ -76,6 +76,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.with
+import androidx.compose.material3.CardDefaults
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import com.example.owl.ui.theme.blue700
@@ -204,7 +205,10 @@ fun FeaturedCourse(
             .fillMaxWidth()
             .padding(16.dp)
             .clickable { selectCourse(course.id) },
-        shape = RoundedCornerShape(16.dp)
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 4.dp
+        )
     ) {
         Column {
             Box(
